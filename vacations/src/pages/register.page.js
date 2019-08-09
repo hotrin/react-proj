@@ -3,13 +3,13 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import { navigate, A } from 'hookrouter';
+import config from '../config';
 
 const useStyles = makeStyles(theme => ({
 	'@global': {
@@ -39,6 +39,22 @@ const useStyles = makeStyles(theme => ({
 export default function RegisterPage() {
 	const classes = useStyles();
 
+	const handleRegister = async (e) => {
+		e.preventDefault();
+		await fetch(`${config.server}/register`, {
+			method: 'post',
+			body: {
+				name: e.target.name.value,
+				username: e.target.username.value,
+				password: e.target.password.value
+			},
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		navigate('/login');
+	}
+
 	return (
 		<Container component="main" maxWidth="xs">
 			<CssBaseline />
@@ -49,7 +65,7 @@ export default function RegisterPage() {
 				<Typography component="h1" variant="h5">
 					Sign up
         		</Typography>
-				<form className={classes.form} noValidate>
+				<form className={classes.form} onSubmit={handleRegister}>
 					<Grid container spacing={2}>
 						<Grid item xs={12} sm={12}>
 							<TextField
@@ -98,9 +114,9 @@ export default function RegisterPage() {
           			</Button>
 					<Grid container justify="flex-end">
 						<Grid item>
-							<Link href="#" variant="body2">
+							<A href="/login">
 								Already have an account? Sign in
-            				</Link>
+            				</A>
 						</Grid>
 					</Grid>
 				</form>

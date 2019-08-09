@@ -11,6 +11,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import config from '../config';
+import { navigate, A } from 'hookrouter';
 
 const useStyles = makeStyles(theme => ({
 	'@global': {
@@ -40,6 +42,27 @@ const useStyles = makeStyles(theme => ({
 export default function LoginPage() {
 	const classes = useStyles();
 
+	const handleLogin = async (e) => {
+		e.preventDefault();
+		const req = await fetch(`${config.server}/login`, {
+			method: 'post',
+			body: JSON.stringify({
+				username: e.target.username.value,
+				password: e.target.password.value
+			}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		const users = await req.json();
+		sessionStorage.setItem('user', JSON.stringify(users[0]));
+		if (users[0].isAdmin) {
+			navigate('/admin');
+		} else {
+			navigate('/');
+		}
+	}
+
 	return (
 		<Container component="main" maxWidth="xs">
 			<CssBaseline />
@@ -50,16 +73,16 @@ export default function LoginPage() {
 				<Typography component="h1" variant="h5">
 					Sign in
         		</Typography>
-				<form className={classes.form} noValidate>
+				<form className={classes.form} onSubmit={handleLogin}>
 					<TextField
 						variant="outlined"
 						margin="normal"
 						required
 						fullWidth
-						id="email"
-						label="Email Address"
-						name="email"
-						autoComplete="email"
+						id="username"
+						label="Username"
+						name="username"
+						autoComplete="username"
 						autoFocus
 					/>
 					<TextField
@@ -73,10 +96,6 @@ export default function LoginPage() {
 						id="password"
 						autoComplete="current-password"
 					/>
-					<FormControlLabel
-						control={<Checkbox value="remember" color="primary" />}
-						label="Remember me"
-					/>
 					<Button
 						type="submit"
 						fullWidth
@@ -88,9 +107,9 @@ export default function LoginPage() {
         			</Button>
 					<Grid container>
 						<Grid item>
-							<Link href="#" variant="body2">
+							<A href="/register">
 								{"Don't have an account? Sign Up"}
-							</Link>
+							</A>
 						</Grid>
 					</Grid>
 				</form>

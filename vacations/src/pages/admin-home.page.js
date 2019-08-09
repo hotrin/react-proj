@@ -13,6 +13,7 @@ import { vacationStore } from '../stores/vacations.store';
 import useFetchVacations from '../hooks/fetch-vacations.hook';
 import AdminVacationCard from '../components/admin-vacation-card';
 import { navigate } from 'hookrouter';
+import useAuthHook from '../hooks/auth.hook';
 
 const useStyles = makeStyles(theme => ({
 	icon: {
@@ -44,9 +45,14 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function AdminHomePage() {
+	const { isAdmin } = useAuthHook();
 	const classes = useStyles();
-	const [loading] = useFetchVacations();
+	const [loading] = useFetchVacations(isAdmin);
 	const vacations = useStore(vacationStore);
+	
+	if (!isAdmin) {
+		navigate('/login');
+	}
 
 	return (
 		<React.Fragment>

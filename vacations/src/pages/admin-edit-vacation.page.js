@@ -10,6 +10,7 @@ import { editVacationEffect } from '../stores/vacations.store';
 import { navigate } from 'hookrouter';
 import useFetchVacation from '../hooks/fetch-vacation.hook';
 import dayjs from 'dayjs';
+import useAuthHook from '../hooks/auth.hook';
 
 const useStyles = makeStyles(theme => ({
 	'@global': {
@@ -35,6 +36,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function EditVacationPage(props) {
 	const classes = useStyles();
+	useAuthHook({ admin: true });
 	const { id } = props;
 	const [vacation, loading] = useFetchVacation(id);
 

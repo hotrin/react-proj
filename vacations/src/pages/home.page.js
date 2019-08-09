@@ -11,6 +11,7 @@ import useFetchVacations from '../hooks/fetch-vacations.hook';
 import { useStore } from 'effector-react';
 import { vacationStore } from '../stores/vacations.store';
 import VacationCard from '../components/vacation-card';
+import useAuthHook from '../hooks/auth.hook';
 
 const useStyles = makeStyles(theme => ({
 	icon: {
@@ -31,9 +32,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function Album() {
 	const classes = useStyles();
+	const user = useAuthHook();
 	const [loading] = useFetchVacations();
 	const vacations = useStore(vacationStore);
-
+	console.log(user);
+	
 	return (
 		<React.Fragment>
 			<CssBaseline />

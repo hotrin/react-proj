@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { addVacationEffect } from '../stores/vacations.store';
 import { navigate } from 'hookrouter';
+import useAuthHook from '../hooks/auth.hook';
 
 const useStyles = makeStyles(theme => ({
 	'@global': {
@@ -33,6 +34,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function AddVacationPage() {
 	const classes = useStyles();
+	useAuthHook({ admin: true });
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();

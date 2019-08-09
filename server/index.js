@@ -73,7 +73,7 @@ app.put('/vacations/:id', (req, res) => {
 
 app.delete('/vacations/:id', (req, res) => {
   const { id } = req.params;
-  const query = 'DELETE vacation WHERE id=?';
+  const query = 'DELETE FROM vacations WHERE id=?';
   db.query(query, [id], (error, results, fields) => {
     if (!error) {
       res.send(results);
@@ -116,7 +116,7 @@ app.put('/vacation/:id/unfollow', (req, res) => {
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-  const query = 'SELECT from users WHERE username = ? AND password = ?';
+  const query = 'SELECT * from users WHERE username = ? AND password = ?';
   db.query(query, [username, password], (error, results, fields) => {
     if (!error) {
       res.send(results);

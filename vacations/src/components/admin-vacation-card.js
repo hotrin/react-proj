@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { navigate } from 'hookrouter';
 import dayjs from 'dayjs';
+import { deleteVacationEffect } from '../stores/vacations.store';
 
 const useStyles = makeStyles(theme => ({
 	cardGrid: {
@@ -30,6 +31,10 @@ const useStyles = makeStyles(theme => ({
 export default function AdminVacationCard(props) {
 	const classes = useStyles();
 	const { vacation } = props;
+
+	const handleDelete = async () => {
+		await deleteVacationEffect(vacation.id);
+	}
 	
 	return (
 		<Card className={classes.card}>
@@ -52,6 +57,9 @@ export default function AdminVacationCard(props) {
 			<CardActions>
 				<Button onClick={() => navigate(`/admin/vacation/${vacation.id}`)} size="small" color="primary">
 					Edit
+				</Button>
+				<Button onClick={handleDelete} color="secondary">
+					Delete
 				</Button>
 			</CardActions>
 		</Card>

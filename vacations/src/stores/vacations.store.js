@@ -23,6 +23,15 @@ export const addVacationEffect = createEffect('add a vacation', {
 	}
 });
 
+export const deleteVacationEffect = createEffect('deletes a vacaction', {
+	handler: async (id) => {
+		await fetch(`${config.server}/vacations/${id}`, {
+			method: 'delete',
+		});
+		return id;
+	}
+});
+
 export const editVacationEffect = createEffect('add a vacation', {
 	handler: async (data) => {
 		const req = await fetch(`${config.server}/vacations/${data.id}`, {
@@ -35,10 +44,13 @@ export const editVacationEffect = createEffect('add a vacation', {
 		return req.json();
 	}
 });
-
-addVacationEffect.done.watch(res => console.log(res));
-
 vacationStore.on(fetchVacationsEffect.done, (state, results) => {
 	console.log(results);
 	return results.result
+});
+vacationStore.on(deleteVacationEffect.done, (state, { result }) => {
+	const newState = state.splice(0);
+	let index = newState.findIndex(vacation => vacation.id === result);
+	newState.splice(index, 1);
+	return newState;
 });
