@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 export default function useAuthHook() {
 	const [user, setUser] = useState(null);
-	const [isAdmin, setIsAdmin] = useState(false);
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [isAdmin, setIsAdmin] = useState(true);
+	const [isAuthenticated, setIsAuthenticated] = useState(true);
 
 	const logout = () => {
 		sessionStorage.removeItem('user');
@@ -15,6 +15,7 @@ export default function useAuthHook() {
 	useEffect(() => {
 		let u = sessionStorage.getItem('user');
 		if (!u) {
+			setIsAdmin(false);
 			setIsAuthenticated(false);
 			return;
 		} else {
@@ -22,9 +23,7 @@ export default function useAuthHook() {
 			setIsAuthenticated(true);
 			setUser(u);
 		}
-		if (u.isAdmin) {
-			setIsAdmin(true);
-		} 
+		setIsAdmin(u.isAdmin);
 	}, []);
 	return { isAdmin, isAuthenticated, user, logout };
 }
