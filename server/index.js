@@ -11,7 +11,8 @@ let db = mysql.createConnection({
   host: 'remotemysql.com',
   user: 'uHqoXfY5Iu',
   password: 'IG60yZtRF4',
-  database: 'uHqoXfY5Iu'
+  database: 'uHqoXfY5Iu',
+  multipleStatements: true
 });
 
 db.connect((err) => {
@@ -85,11 +86,12 @@ app.delete('/vacations/:id', (req, res) => {
 });
 
 app.put('/vacation/:id/follow', (req, res) => {
-  const { id } = req.pararms;
+  const { id } = req.params;
   const { userId, following } = req.body;
-  const query = 'UPDATE vacations SET followers = followers + 1 WHERE id = ?;';
+  let fl = JSON.stringify(following);
+  const query = 'UPDATE vacations SET followers = followers + 1 WHERE id = ?';
   const query2 = 'UPDATE users SET following = ? WHERE id = ?';
-  db.query(`${query2}${query}`, [id, following, userId], (error, results, fields) => {
+  db.query(`${query2};${query}`, [fl, userId, id], (error, results, fields) => {
     if (!error) {
       res.send(results);
     } else {
@@ -100,11 +102,12 @@ app.put('/vacation/:id/follow', (req, res) => {
 });
 
 app.put('/vacation/:id/unfollow', (req, res) => {
-  const { id } = req.pararms;
+  const { id } = req.params;
   const { userId, following } = req.body;
-  const query = 'UPDATE vacations SET followers = followers - 1 WHERE id = ?;';
+  let fl = JSON.stringify(following);
+  const query = 'UPDATE vacations SET followers = followers - 1 WHERE id = ?';
   const query2 = 'UPDATE users SET following = ? WHERE id = ?';
-  db.query(`${query2}${query}`, [id, following, userId], (error, results, fields) => {
+  db.query(`${query2};${query}`, [fl, userId, id], (error, results, fields) => {
     if (!error) {
       res.send(results);
     } else {

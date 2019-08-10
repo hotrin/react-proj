@@ -21,9 +21,12 @@ export default function useAuthHook() {
 		} else {
 			u = JSON.parse(u); 
 			setIsAuthenticated(true);
+			if (u.following === null) {
+				u.following = [];
+			}
 			setUser(u);
 		}
 		setIsAdmin(u.isAdmin);
 	}, []);
-	return { isAdmin, isAuthenticated, user, logout };
+	return { isAdmin, isAuthenticated, user, logout, setUser };
 }

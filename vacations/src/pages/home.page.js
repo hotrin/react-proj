@@ -12,6 +12,7 @@ import { useStore } from 'effector-react';
 import { vacationStore } from '../stores/vacations.store';
 import VacationCard from '../components/vacation-card';
 import useAuthHook from '../hooks/auth.hook';
+import { navigate } from 'hookrouter';
 
 const useStyles = makeStyles(theme => ({
 	icon: {
@@ -32,10 +33,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function Album() {
 	const classes = useStyles();
-	const user = useAuthHook();
+	const { isAuthenticated } = useAuthHook();
 	const [loading] = useFetchVacations();
 	const vacations = useStore(vacationStore);
-	console.log(user);
+	
+	if (!isAuthenticated) {
+		navigate('/login');
+	}
 	
 	return (
 		<React.Fragment>

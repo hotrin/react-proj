@@ -34,7 +34,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function AddVacationPage() {
 	const classes = useStyles();
-	useAuthHook({ admin: true });
+	const { isAdmin } = useAuthHook();
+
+	if (isAdmin) {
+		navigate('/login');
+	}
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();

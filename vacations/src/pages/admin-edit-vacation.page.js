@@ -36,9 +36,13 @@ const useStyles = makeStyles(theme => ({
 
 export default function EditVacationPage(props) {
 	const classes = useStyles();
-	useAuthHook({ admin: true });
+	const { isAdmin } = useAuthHook();
 	const { id } = props;
 	const [vacation, loading] = useFetchVacation(id);
+
+	if (!isAdmin) {
+		navigate('/login');
+	}
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();

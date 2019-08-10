@@ -43,11 +43,11 @@ export default function RegisterPage() {
 		e.preventDefault();
 		await fetch(`${config.server}/register`, {
 			method: 'post',
-			body: {
+			body: JSON.stringify({
 				name: e.target.name.value,
 				username: e.target.username.value,
 				password: e.target.password.value
-			},
+			}),
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -84,10 +84,10 @@ export default function RegisterPage() {
 								variant="outlined"
 								required
 								fullWidth
-								id="email"
-								label="Email Address"
-								name="email"
-								autoComplete="email"
+								id="username"
+								label="Username"
+								name="username"
+								autoComplete="username"
 							/>
 						</Grid>
 						<Grid item xs={12}>

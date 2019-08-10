@@ -7,6 +7,9 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import dayjs from 'dayjs';
+import config from '../config';
+import useAuthHook from '../hooks/auth.hook';
+import { navigate } from 'hookrouter';
 
 const useStyles = makeStyles(theme => ({
 	cardGrid: {
@@ -29,6 +32,47 @@ const useStyles = makeStyles(theme => ({
 export default function VacationCard(props) {
 	const classes = useStyles();
 	const { vacation } = props;
+	const { isAuthenticated, user, setUser } = useAuthHook();
+	
+	if (!isAuthenticated) {
+		navigate('/login');
+	}
+
+	const follow = async () => {
+		await fetch(`${config.server}/vacation/${vacation.id}/follow`, {
+			method: 'put',
+			body: JSON.stringify({
+				userId: user.id,
+				following: [...new Set([...user.following, vacation.id])]
+			}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		let newFollowing = [...new Set([...user.following, vacation.id])]
+		user.following = newFollowing;
+		setUser({ ...user, following: newFollowing });
+		sessionStorage.setItem('user', JSON.stringify(user));
+	}
+
+	const unfollow = async () => {
+		let following = user.following.splice(0);
+		let index = following.findIndex(vid => vid === vacation.id);
+		following.splice(index, 1);
+		await fetch(`${config.server}/vacation/${vacation.id}/unfollow`, {
+			method: 'put',
+			body: JSON.stringify({
+				userId: user.id,
+				following
+			}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		user.following = following;
+		setUser({ ...user, following });
+		sessionStorage.setItem('user', JSON.stringify(user));
+	}
 	
 	return (
 		<Card className={classes.card}>
@@ -45,13 +89,19 @@ export default function VacationCard(props) {
 					<div>From: {dayjs(vacation.fromDate).format('DD-MM-YYYY')}</div>
 					<div>To: {dayjs(vacation.toDate).format('DD-MM-YYYY')}</div>
 					<div>Price: ${vacation.price}</div>
-					<div>Followers: {vacation.followers}</div>
 				</Typography>
 			</CardContent>
 			<CardActions>
-				<Button size="small" color="primary">
-					Follow
-				</Button>
+				{user && !user.following.includes(vacation.id) &&
+					<Button onClick={follow} size="small" color="primary">
+						Follow
+					</Button>
+				}
+				{user && user.following.includes(vacation.id) &&
+					<Button onClick={unfollow} size="small" color="secondary">
+						UnFollow
+					</Button>
+				}
 			</CardActions>
 		</Card>
 	);
